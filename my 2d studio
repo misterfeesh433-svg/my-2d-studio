@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Studio Game</title>
+    <style>
+        body { margin: 0; padding: 0; text-align: center; background: #333; }
+        canvas { background: #fff; border: 5px solid #555; display: block; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <canvas id="studio" width="600" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('studio');
+        const ctx = canvas.getContext('2d');
+        const blocks = [{x: 200, y: 200, w: 50, h: 50}];
+        let player = {x: 50, y: 50, w: 30, h: 30, vx: 0, vy: 0};
+
+        window.onkeydown = (e) => {
+            if(e.key === "ArrowRight") player.vx = 5;
+            if(e.key === "ArrowLeft") player.vx = -5;
+            if(e.key === "ArrowUp") player.vy = -5;
+            if(e.key === "ArrowDown") player.vy = 5;
+        };
+
+        function update() {
+            let nextX = player.x + player.vx;
+            let nextY = player.y + player.vy;
+            let collision = false;
+            blocks.forEach(b => {
+                if (nextX < b.x + b.w && nextX + player.w > b.x && nextY < b.y + b.h && nextY + player.h > b.y) collision = true;
+            });
+            if (!collision) { player.x = nextX; player.y = nextY; }
+            player.vx = 0; player.vy = 0;
+            ctx.clearRect(0,0,600,400);
+            ctx.fillStyle = 'blue';
+            blocks.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+            ctx.fillStyle = 'red';
+            ctx.fillRect(player.x, player.y, player.w, player.h);
+            requestAnimationFrame(update);
+        }
+        update();
+    </script>
+</body>
+</html>
